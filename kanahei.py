@@ -1,6 +1,4 @@
 from selenium import webdriver
-#from bs4 import BeautifulSoup
-#import pandas as pd
 import requests
 
 driver = webdriver.Chrome("/mnt/c/VSCode/chromedriver/chromedriver.exe")
@@ -8,6 +6,8 @@ driver.get("http://www.kanahei.com/kabegami/")
 
 # list to store all wallpaper links
 links = []
+
+# start from page 1
 page = 1
 while page <= 10:
     #print("on page " + str(page))
@@ -20,6 +20,7 @@ while page <= 10:
         # first page has these.
         link_elements += driver.find_elements_by_link_text('16:9')
 
+    # loop through the link elements
     for element in link_elements:
         # add the urls of each link element to the links list
         links.append(element.get_attribute('href'))
@@ -41,15 +42,11 @@ while page <= 10:
 for count, link in enumerate(links, start=1):
     #print(link)
     r = requests.get(link)
+
+    # open a new file in the kanahei-wallpapers directory with a name determined by the count.
+    # zfill just pads the number with zeros.
+    # wb mode is write bytes
+    # write the picture (r.content) to the file using f.write.
     with open(('kanahei-wallpapers/' + str(count).zfill(3) + '.jpg'), 'wb') as f:
         f.write(r.content)
-"""
-r = requests.get(url)
 
-# open a new file called wallpaper.png in wb mode (write bytes) and 
-# write stuff to it using f.write
-with open('kanahei-wallpapers/wallpaper.jpg', 'wb') as f:
-    f.write(r.content)
-
-"""
-#driver.quit()
